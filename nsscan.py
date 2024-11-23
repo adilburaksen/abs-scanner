@@ -95,14 +95,29 @@ def print_vulnerability_results(vulnerabilities):
             print(f"    {Fore.YELLOW}•{Style.RESET_ALL} {rec}")
 
 def parse_port_range(port_range):
-    """Parse port range string (e.g., '80', '22-25', '80,443,8080-8090')"""
+    """Parse port range string (e.g., '80', '22-25', '80,443,8080-8090', 'common', 'all')"""
+    # Önceden tanımlanmış port listeleri
+    COMMON_PORTS = {20, 21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900, 8080}
+    
+    # Özel anahtar kelimeler
+    if port_range.lower() == 'all':
+        return (1, 65535)
+    elif port_range.lower() == 'common':
+        return (min(COMMON_PORTS), max(COMMON_PORTS))
+    
+    # Normal port aralığı parse etme
     ports = set()
     for part in port_range.split(','):
         if '-' in part:
             start, end = map(int, part.split('-'))
+            if start < 1 or end > 65535:
+                raise ValueError("Port numbers must be between 1 and 65535")
             ports.update(range(start, end + 1))
         else:
-            ports.add(int(part))
+            port = int(part)
+            if port < 1 or port > 65535:
+                raise ValueError("Port numbers must be between 1 and 65535")
+            ports.add(port)
     return min(ports), max(ports)
 
 def parse_arguments():
@@ -113,6 +128,8 @@ def parse_arguments():
         epilog='''
 Examples:
   %(prog)s -t scanme.nmap.org -p 22-25
+  %(prog)s -t 192.168.1.1 -p common        # Scan common ports
+  %(prog)s -t example.com -p all           # Scan all ports (1-65535)
   %(prog)s -t 192.168.1.1 -p 80,443 --workers 200
   %(prog)s -t example.com -p 20-30 --timeout 0.5
   %(prog)s -t 10.0.0.1 -p 1-1000 --no-vuln-scan
@@ -121,7 +138,12 @@ Examples:
     parser.add_argument('-t', '--target', required=True,
                       help='Target host to scan (IP address or domain name)')
     parser.add_argument('-p', '--ports', required=True,
-                      help='Port(s) to scan (e.g., 80, 22-25, 80,443,8080-8090)')
+                      help='Port(s) to scan. Can be:\n'
+                           '- Specific ports: 80,443\n'
+                           '- Port range: 22-25\n'
+                           '- Mixed: 80,443,8080-8090\n'
+                           '- "common": Scan common ports\n'
+                           '- "all": Scan all ports (1-65535)')
     parser.add_argument('-w', '--workers', type=int, default=100,
                       help='Number of worker threads (default: 100)')
     parser.add_argument('--timeout', type=float, default=1.0,
@@ -130,18 +152,34 @@ Examples:
                       help='Skip vulnerability scanning')
     parser.add_argument('--no-honeypot', action='store_true',
                       help='Skip honeypot detection')
+    parser.add_argument('--fast', action='store_true',
+                      help='Fast scan mode (reduces timeout and increases workers)')
     
     return parser.parse_args()
 
 async def main():
     args = parse_arguments()
-    port_range = parse_port_range(args.ports)
+    
+    # Fast scan mode ayarları
+    if args.fast:
+        args.timeout = 0.3
+        args.workers = 200
+    
+    try:
+        port_range = parse_port_range(args.ports)
+    except ValueError as e:
+        print(f"\n{Fore.RED}Error: {e}{Style.RESET_ALL}")
+        return 1
+    
+    total_ports = port_range[1] - port_range[0] + 1
     
     print(f"\n{Fore.CYAN}Network Security Scanner{Style.RESET_ALL}")
     print(f"\n{Fore.CYAN}Target:{Style.RESET_ALL} {Fore.YELLOW}{args.target}{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}Port range:{Style.RESET_ALL} {port_range[0]}-{port_range[1]}")
+    print(f"{Fore.CYAN}Port range:{Style.RESET_ALL} {port_range[0]}-{port_range[1]} ({total_ports} ports)")
     print(f"{Fore.CYAN}Workers:{Style.RESET_ALL} {args.workers}")
     print(f"{Fore.CYAN}Timeout:{Style.RESET_ALL} {args.timeout}s")
+    if args.fast:
+        print(f"{Fore.YELLOW}Fast scan mode enabled{Style.RESET_ALL}")
     
     try:
         # Port scanning

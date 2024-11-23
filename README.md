@@ -69,7 +69,17 @@ pip install -r requirements.txt
 
 Run the scanner with basic options:
 ```bash
+# Scan specific ports
 python nsscan.py -t scanme.nmap.org -p 22-25
+
+# Scan common ports
+python nsscan.py -t 192.168.1.1 -p common
+
+# Full port scan (1-65535)
+python nsscan.py -t example.com -p all
+
+# Fast scan of common ports
+python nsscan.py -t 192.168.1.1 -p common --fast
 ```
 
 Advanced usage examples:
@@ -80,16 +90,22 @@ python nsscan.py -t 192.168.1.1 -p 80,443 --workers 200
 # Scan a range of ports with shorter timeout
 python nsscan.py -t example.com -p 20-30 --timeout 0.5
 
-# Scan many ports without vulnerability checking
-python nsscan.py -t 10.0.0.1 -p 1-1000 --no-vuln-scan
+# Fast scan of multiple ports without vulnerability checking
+python nsscan.py -t 10.0.0.1 -p 1-1000 --fast --no-vuln-scan
 ```
 
 Available options:
 ```
--t, --target    Target host to scan (IP or domain)
--p, --ports     Ports to scan (e.g., 80, 22-25, 80,443,8080-8090)
--w, --workers   Number of worker threads (default: 100)
---timeout       Timeout in seconds for each port (default: 1.0)
+-t, --target     Target host to scan (IP or domain)
+-p, --ports      Ports to scan. Can be:
+                 - Specific ports: 80,443
+                 - Port range: 22-25
+                 - Mixed: 80,443,8080-8090
+                 - "common": Scan common ports
+                 - "all": Scan all ports (1-65535)
+-w, --workers    Number of worker threads (default: 100)
+--timeout        Timeout in seconds for each port (default: 1.0)
+--fast          Fast scan mode (reduces timeout and increases workers)
 --no-vuln-scan  Skip vulnerability scanning
 --no-honeypot   Skip honeypot detection
 ```
