@@ -3,6 +3,71 @@
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Scapy](https://img.shields.io/badge/scapy-latest-orange)](https://scapy.net/)
+[![Release](https://img.shields.io/github/v/release/adilburaksen/port-scanner)](https://github.com/adilburaksen/port-scanner/releases)
+[![Last Commit](https://img.shields.io/github/last-commit/adilburaksen/port-scanner)](https://github.com/adilburaksen/port-scanner/commits/master)
+
+> 🛡️ Advanced Port Scanner (APS) is a state-of-the-art network security tool that revolutionizes the way security professionals conduct port scanning and vulnerability assessments. Built with modern Python and powered by Scapy, it combines high performance with user-friendly features.
+
+## About 🌟
+
+Advanced Port Scanner emerged from the need for a more comprehensive and user-friendly network security tool. Unlike traditional port scanners, APS integrates multiple security aspects into a single, cohesive tool:
+
+### Core Philosophy 💭
+
+- **Simplicity**: Complex security tasks made simple through an intuitive CLI
+- **Performance**: Blazing fast scans using async operations and multi-threading
+- **Accuracy**: Precise service detection and vulnerability assessment
+- **Ethics**: Strong focus on responsible security testing
+
+### Key Differentiators 🚀
+
+- 🔥 **Modern Architecture**: Built with Python 3.8+ and async programming
+- 🎯 **Smart Scanning**: Intelligent port selection and service fingerprinting
+- 🛡️ **Comprehensive Security**: Integrated honeypot detection and vulnerability assessment
+- 📊 **Beautiful Output**: Rich CLI interface with colored, structured results
+- ⚡ **Flexible Usage**: From quick scans to detailed security audits
+
+### Perfect For 👥
+
+- **Security Professionals**: Comprehensive security assessments
+- **Network Administrators**: System monitoring and maintenance
+- **Security Researchers**: Network behavior analysis
+- **Ethical Hackers**: Penetration testing (with permission)
+- **Educational Purposes**: Learning about network security
+
+### Releases 📦
+
+#### Latest Release (v1.0.0) - March 2024
+- Initial public release
+- Core Features:
+  - High-performance port scanning
+  - Service detection
+  - Honeypot detection
+  - Vulnerability scanning
+  - Beautiful CLI interface
+
+#### Coming Soon (v1.1.0)
+- Enhanced vulnerability database
+- Custom scan profiles
+- JSON/XML export options
+- Scan result comparison
+- Performance optimizations
+
+### Ethical Guidelines 🤝
+
+This tool is designed for:
+- Authorized security testing
+- Network administration
+- Educational purposes
+- Security research
+
+**Important**: Always ensure you have explicit permission before scanning any systems or networks.
+
+#network-security #port-scanner #python #cybersecurity #ethical-hacking #penetration-testing 
+#security-tools #network-monitoring #security-assessment #python3 #async-programming #scapy 
+#network-tools #security-automation #infosec #netsec #security-testing #devsecops
+
+---
 
 A sophisticated network security tool built with Python that combines port scanning, service detection, honeypot detection, and vulnerability assessment capabilities. Perfect for security professionals, network administrators, and ethical hackers.
 
