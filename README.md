@@ -67,9 +67,31 @@ pip install -r requirements.txt
 
 ### Basic Usage
 
-Run a basic scan:
+Run the scanner with basic options:
 ```bash
-python test_scanner.py
+python nsscan.py -t scanme.nmap.org -p 22-25
+```
+
+Advanced usage examples:
+```bash
+# Scan specific ports with more workers
+python nsscan.py -t 192.168.1.1 -p 80,443 --workers 200
+
+# Scan a range of ports with shorter timeout
+python nsscan.py -t example.com -p 20-30 --timeout 0.5
+
+# Scan many ports without vulnerability checking
+python nsscan.py -t 10.0.0.1 -p 1-1000 --no-vuln-scan
+```
+
+Available options:
+```
+-t, --target    Target host to scan (IP or domain)
+-p, --ports     Ports to scan (e.g., 80, 22-25, 80,443,8080-8090)
+-w, --workers   Number of worker threads (default: 100)
+--timeout       Timeout in seconds for each port (default: 1.0)
+--no-vuln-scan  Skip vulnerability scanning
+--no-honeypot   Skip honeypot detection
 ```
 
 ## 📚 Documentation
@@ -138,7 +160,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-**Adil Burak Sen**
+**Adil Burak Şen**
 
 - GitHub: [@adilburaksen](https://github.com/adilburaksen)
 

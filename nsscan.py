@@ -2,6 +2,7 @@
 
 import asyncio
 import sys
+import argparse
 from port_scanner import PortScanner
 from modules.honeypot_detector import HoneypotDetector
 from modules.vulnerability_scanner import VulnerabilityScanner
@@ -54,7 +55,6 @@ def print_scan_results(results):
 
 def print_honeypot_results(score, reasons):
     """Print honeypot analysis results"""
-    # Score color based on risk level
     if score < 0.3:
         score_color = Fore.GREEN
     elif score < 0.7:
@@ -78,7 +78,6 @@ def print_vulnerability_results(vulnerabilities):
     
     print(f"\n{Fore.RED}Vulnerabilities Found:{Style.RESET_ALL}")
     for vuln in vulnerabilities:
-        # Set color based on severity
         severity_color = {
             'CRITICAL': Back.RED + Fore.WHITE,
             'HIGH': Fore.RED,
@@ -95,51 +94,96 @@ def print_vulnerability_results(vulnerabilities):
         for rec in vuln.recommendations:
             print(f"    {Fore.YELLOW}•{Style.RESET_ALL} {rec}")
 
-async def main():
-    target = "scanme.nmap.org"
-    port_range = (22, 23)  # Daha dar bir port aralığı
+def parse_port_range(port_range):
+    """Parse port range string (e.g., '80', '22-25', '80,443,8080-8090')"""
+    ports = set()
+    for part in port_range.split(','):
+        if '-' in part:
+            start, end = map(int, part.split('-'))
+            ports.update(range(start, end + 1))
+        else:
+            ports.add(int(part))
+    return min(ports), max(ports)
+
+def parse_arguments():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser(
+        description='Network Security Scanner - Port scanning, service detection, and vulnerability assessment',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  %(prog)s -t scanme.nmap.org -p 22-25
+  %(prog)s -t 192.168.1.1 -p 80,443 --workers 200
+  %(prog)s -t example.com -p 20-30 --timeout 0.5
+  %(prog)s -t 10.0.0.1 -p 1-1000 --no-vuln-scan
+''')
     
-    print(f"\n{Fore.CYAN}Starting scan of {Fore.YELLOW}{target}{Style.RESET_ALL}")
-    print(f"Port range: {port_range[0]}-{port_range[1]}")
+    parser.add_argument('-t', '--target', required=True,
+                      help='Target host to scan (IP address or domain name)')
+    parser.add_argument('-p', '--ports', required=True,
+                      help='Port(s) to scan (e.g., 80, 22-25, 80,443,8080-8090)')
+    parser.add_argument('-w', '--workers', type=int, default=100,
+                      help='Number of worker threads (default: 100)')
+    parser.add_argument('--timeout', type=float, default=1.0,
+                      help='Timeout in seconds for each port (default: 1.0)')
+    parser.add_argument('--no-vuln-scan', action='store_true',
+                      help='Skip vulnerability scanning')
+    parser.add_argument('--no-honeypot', action='store_true',
+                      help='Skip honeypot detection')
+    
+    return parser.parse_args()
+
+async def main():
+    args = parse_arguments()
+    port_range = parse_port_range(args.ports)
+    
+    print(f"\n{Fore.CYAN}Network Security Scanner{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}Target:{Style.RESET_ALL} {Fore.YELLOW}{args.target}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Port range:{Style.RESET_ALL} {port_range[0]}-{port_range[1]}")
+    print(f"{Fore.CYAN}Workers:{Style.RESET_ALL} {args.workers}")
+    print(f"{Fore.CYAN}Timeout:{Style.RESET_ALL} {args.timeout}s")
     
     try:
-        # Port taraması
+        # Port scanning
         print(f"\n{Fore.CYAN}Performing port scan...{Style.RESET_ALL}")
-        scanner = PortScanner(max_workers=200, timeout=0.5)  # Daha fazla worker ve daha kısa timeout
-        results = await scanner.scan_target(target, port_range)
+        scanner = PortScanner(max_workers=args.workers, timeout=args.timeout)
+        results = await scanner.scan_target(args.target, port_range)
         print_scan_results(results)
         
-        # Honeypot kontrolü
-        print(f"\n{Fore.CYAN}Checking for honeypot characteristics...{Style.RESET_ALL}")
-        honeypot_detector = HoneypotDetector()
-        open_ports = [r.port for r in results if r.is_open]
-        if open_ports:
-            honeypot_score = honeypot_detector.analyze_target(target, open_ports)
-            print_honeypot_results(honeypot_score.score, honeypot_score.reasons)
-        else:
-            print(f"{Fore.YELLOW}No open ports to analyze for honeypot characteristics{Style.RESET_ALL}")
-            
-        # Güvenlik açığı taraması
-        if open_ports:
+        # Honeypot detection
+        if not args.no_honeypot:
+            print(f"\n{Fore.CYAN}Checking for honeypot characteristics...{Style.RESET_ALL}")
+            honeypot_detector = HoneypotDetector()
+            open_ports = [r.port for r in results if r.is_open]
+            if open_ports:
+                honeypot_score = honeypot_detector.analyze_target(args.target, open_ports)
+                print_honeypot_results(honeypot_score.score, honeypot_score.reasons)
+            else:
+                print(f"{Fore.YELLOW}No open ports to analyze for honeypot characteristics{Style.RESET_ALL}")
+        
+        # Vulnerability scanning
+        if not args.no_vuln_scan and open_ports:
             print(f"\n{Fore.CYAN}Scanning for vulnerabilities...{Style.RESET_ALL}")
             vuln_scanner = VulnerabilityScanner()
             port_info = [{'port': r.port, 'service': r.service} for r in results if r.is_open]
-            vulnerabilities = vuln_scanner.scan_target(target, port_info)
+            vulnerabilities = vuln_scanner.scan_target(args.target, port_info)
             print_vulnerability_results(vulnerabilities)
-        else:
-            print(f"{Fore.YELLOW}No open ports to scan for vulnerabilities{Style.RESET_ALL}")
-            
+        
     except KeyboardInterrupt:
         print(f"\n{Fore.YELLOW}Scan interrupted by user{Style.RESET_ALL}")
+        return 1
     except Exception as e:
         print(f"\n{Fore.RED}Error during scan: {e}{Style.RESET_ALL}", file=sys.stderr)
-        raise
+        return 1
+    
+    return 0
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        sys.exit(asyncio.run(main()))
     except KeyboardInterrupt:
         print(f"\n{Fore.YELLOW}Scan interrupted by user{Style.RESET_ALL}")
+        sys.exit(1)
     except Exception as e:
         print(f"\n{Fore.RED}Fatal error: {e}{Style.RESET_ALL}", file=sys.stderr)
         sys.exit(1)
