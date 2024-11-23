@@ -1,0 +1,44 @@
+{
+    "rules": [
+        {
+            "id": "CUSTOM-001",
+            "service": "apache",
+            "version_pattern": "2\\.4\\.[0-2][0-9]",
+            "description": "Apache 2.4.x versions below 2.4.30 are vulnerable to various security issues",
+            "severity": "HIGH",
+            "remediation": "Upgrade to Apache 2.4.30 or later"
+        },
+        {
+            "id": "CUSTOM-002",
+            "service": "nginx",
+            "version_pattern": "1\\.1[0-7]\\.[0-9]+",
+            "description": "Older versions of Nginx may contain security vulnerabilities",
+            "severity": "MEDIUM",
+            "remediation": "Upgrade to the latest stable version of Nginx"
+        },
+        {
+            "id": "CUSTOM-003",
+            "service": "openssh",
+            "version_pattern": "7\\.[0-7]",
+            "description": "OpenSSH versions below 7.8 may be vulnerable to user enumeration",
+            "severity": "MEDIUM",
+            "remediation": "Upgrade to OpenSSH 7.8 or later"
+        },
+        {
+            "id": "CUSTOM-004",
+            "service": "mysql",
+            "version_pattern": "5\\.[0-6]\\.[0-9]+",
+            "description": "MySQL 5.x versions may contain multiple security vulnerabilities",
+            "severity": "HIGH",
+            "remediation": "Upgrade to MySQL 8.0 or later"
+        },
+        {
+            "id": "CUSTOM-005",
+            "service": "postgresql",
+            "version_pattern": "9\\.[0-6]\\.[0-9]+",
+            "description": "PostgreSQL versions below 10 may have security issues",
+            "severity": "MEDIUM",
+            "remediation": "Upgrade to PostgreSQL 10 or later"
+        }
+    ]
+}
