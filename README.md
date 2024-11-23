@@ -3,8 +3,6 @@
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Scapy](https://img.shields.io/badge/scapy-latest-orange)](https://scapy.net/)
-[![Release](https://img.shields.io/github/v/release/adilburaksen/port-scanner)](https://github.com/adilburaksen/port-scanner/releases)
-[![Last Commit](https://img.shields.io/github/last-commit/adilburaksen/port-scanner)](https://github.com/adilburaksen/port-scanner/commits/master)
 
 > 🛡️ Advanced Port Scanner (APS) is a state-of-the-art network security tool that revolutionizes the way security professionals conduct port scanning and vulnerability assessments. Built with modern Python and powered by Scapy, it combines high performance with user-friendly features.
 
