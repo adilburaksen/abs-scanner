@@ -1,108 +1,192 @@
-# ABS Scanner - Advanced Bug Bounty Scanner
+# ABS Scanner - Advanced Web Application Security Scanner
 
-ABS Scanner is a comprehensive bug bounty and security assessment tool designed to help security researchers and bug bounty hunters identify potential vulnerabilities across various attack surfaces, including web applications, APIs, and cloud resources.
+<div align="center">
+  <img src="docs/images/logo.png" alt="ABS Scanner Logo" width="200"/>
+  <br>
+  <strong>🔒 Comprehensive Web Application Security Assessment Tool 🔍</strong>
+</div>
 
-## Features
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#modules">Modules</a> •
+  <a href="#configuration">Configuration</a> •
+  <a href="#contributing">Contributing</a> •
+  <a href="#license">License</a>
+</p>
 
-### Core Modules
-- **Reconnaissance Module**: Asset discovery and subdomain enumeration
-- **Web Module**: Web application security testing
-- **API Module**: API endpoint discovery and security testing
-- **Vulnerability Module**: Common vulnerability scanning
-- **Cloud Module**: Cloud resource discovery and security checks
-- **CVE Module**: CVE database integration
-- **Report Module**: Detailed reporting in multiple formats
+## 🌟 Features
 
-### Key Capabilities
-- Subdomain enumeration and asset discovery
-- Web vulnerability scanning (XSS, SQLi, SSRF, etc.)
-- API security testing
-- Cloud resource misconfiguration detection
-- CVE database integration
-- Custom payload management
-- Comprehensive reporting (HTML, Markdown, JSON)
+### 🔍 Reconnaissance & Information Gathering
+- **OSINT Module**
+  - WHOIS information gathering
+  - Cloud service exposure detection (AWS, Azure, GCP)
+  - GitHub repository exposure analysis
+  - Email breach detection (via HaveIBeenPwned)
+  - Domain intelligence gathering
 
-### Cloud Security Features
-- AWS resource discovery and security checks
-- Azure resource discovery and security checks
-- GCP resource discovery and security checks
-- Storage bucket misconfiguration detection
+- **Subdomain Enumeration**
+  - Brute-force subdomain discovery
+  - DNS record analysis
+  - HTTP/HTTPS availability checking
+  - Parallel scanning support
+  - Custom wordlist support
 
-## Installation
+- **Technology Detection**
+  - Web server fingerprinting
+  - CMS detection (WordPress, Drupal, Joomla)
+  - JavaScript framework identification
+  - Security header analysis
+  - Cookie security assessment
 
-1. Clone the repository:
+### 🛡️ Security Assessment
+- **Port Scanning**
+  - Fast port discovery
+  - Service version detection
+  - Banner grabbing
+  - Common vulnerability checking
+  - Port security recommendations
+
+- **Directory Enumeration**
+  - Recursive directory scanning
+  - Sensitive file detection
+  - Custom wordlist support
+  - Rate limiting capabilities
+  - Smart error detection
+
+- **Vulnerability Scanning**
+  - Cross-Site Scripting (XSS) detection
+  - SQL Injection testing
+  - Local/Remote File Inclusion checks
+  - Server-Side Request Forgery (SSRF)
+  - Command Injection detection
+  - Security misconfiguration analysis
+
+### 📊 Reporting
+- **Comprehensive Reports**
+  - Detailed HTML reports
+  - PDF export functionality
+  - Executive summary
+  - Technical findings
+  - Remediation recommendations
+  - Visual charts and statistics
+
+## 🚀 Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- pip (Python package manager)
+- Git
+
+### Quick Start
 ```bash
+# Clone the repository
 git clone https://github.com/adilburaksen/abs-scanner.git
 cd abs-scanner
-```
 
-2. Create a virtual environment (recommended):
-```bash
+# Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
 
-3. Install dependencies:
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-## Usage
+### Optional Dependencies
+- Nmap: For enhanced port scanning
+- Chromium: For JavaScript-rendered content analysis
+- Tesseract: For OCR capabilities in screenshot analysis
 
-### Basic Scan
+## 💻 Usage
+
+### Basic Scanning
 ```bash
-python bbscanner.py --target example.com
+# Full scan of a target
+python app.py -t example.com
+
+# Specific module scanning
+python app.py -t example.com -s [port|dir|vuln]
 ```
 
-### Module-Specific Scan
+### Advanced Options
 ```bash
-python bbscanner.py --target example.com --modules recon,web,api,vuln,cloud
+# OSINT gathering only
+python app.py -t example.com --osint-only
+
+# Subdomain enumeration
+python app.py -t example.com --subdomains-only
+
+# Technology detection
+python app.py -t example.com --tech-detect-only
+
+# Custom output directory
+python app.py -t example.com -o /path/to/reports
 ```
 
-### Available Modules
-- `recon`: Reconnaissance and asset discovery
-- `web`: Web application security testing
-- `api`: API security testing
-- `vuln`: Vulnerability scanning
-- `cloud`: Cloud resource security testing
-- `report`: Report generation
+## 🔧 Configuration
 
-## Configuration
+### Config File
+Edit `config.py` to customize:
+```python
+# Scanning configurations
+MAX_THREADS = 10
+TIMEOUT = 30
+RATE_LIMIT = 100  # requests per minute
 
-The scanner can be configured through command-line arguments or a configuration file. Key settings include:
+# Module-specific settings
+PORT_SCAN_RANGE = "1-1000"
+SUBDOMAIN_WORDLIST = "wordlists/subdomains.txt"
+```
 
-- Target scope and exclusions
-- Scanning intensity and timeout settings
-- Custom payload definitions
-- Report format preferences
-- Cloud provider settings
+### Environment Variables
+```bash
+# API Keys (optional)
+export HAVEIBEENPWNED_API_KEY="your_api_key"
+export SHODAN_API_KEY="your_api_key"
+```
 
-## Output
+## 🔍 Modules
 
-The scanner generates detailed reports in multiple formats:
-- HTML reports with interactive elements
-- Markdown reports for easy sharing
-- JSON output for integration with other tools
+### Core Modules
+- **Web Scanner**: Web application security assessment
+- **Port Scanner**: Network port analysis
+- **Directory Enumerator**: Web content discovery
+- **Vulnerability Scanner**: Security vulnerability detection
+- **Report Generator**: Comprehensive report creation
 
-## Contributing
+### Reconnaissance Modules
+- **OSINT**: Open-source intelligence gathering
+- **Subdomain Enumeration**: Subdomain discovery
+- **Technology Detection**: Stack identification
 
-Contributions are welcome! Please feel free to submit pull requests or create issues for bugs and feature requests.
+## 🤝 Contributing
 
-## Security
+We welcome contributions! Please follow these steps:
 
-- Please use this tool responsibly and only on systems you have permission to test
-- Follow responsible disclosure practices
-- Respect target system resources and rate limits
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Author
+## ⚠️ Disclaimer
 
-Adil Burak ŞEN
-- GitHub: [@adilburaksen](https://github.com/adilburaksen)
+This tool is for educational and ethical testing purposes only. Always obtain proper authorization before scanning any systems or networks. The developers assume no liability for misuse or damage caused by this program.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-Special thanks to all contributors and the bug bounty community for their valuable input and feedback.
+- Inspired by [Rengine](https://github.com/yogeshojha/rengine)
+- Thanks to all [contributors](https://github.com/adilburaksen/abs-scanner/graphs/contributors)
+
+---
+
+<div align="center">
+  <strong>Made with ❤️ by Adil Burak ŞEN</strong>
+  <br>
+  <small>© 2023 ABS Scanner. All rights reserved.</small>
+</div>
