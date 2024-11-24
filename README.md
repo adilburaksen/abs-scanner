@@ -36,15 +36,16 @@ git clone https://github.com/adilburaksen/abs-scanner.git
 cd abs-scanner
 ```
 
-2. Install dependencies:
+2. Create a virtual environment (recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-
-3. Optional: Configure cloud provider credentials if using cloud scanning features:
-- AWS: Configure AWS credentials (`~/.aws/credentials` or environment variables)
-- Azure: Set up Azure authentication
-- GCP: Configure GCP service account
 
 ## Usage
 
